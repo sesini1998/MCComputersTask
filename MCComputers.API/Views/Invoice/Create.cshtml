@@ -1,0 +1,127 @@
+﻿@model MCComputers.API.Models.ViewModels.TransactionCreate
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="row">
+    <form id="invoiceForm">
+        <div class="row align-items-end">
+            @* Since Loging functionally has not been implemented user id has to put this way. *@
+            <input type="hidden" name="CustomerId" value="3F6273C6-215F-4112-8701-1D0155D9E0EC" />
+            <div class="col-sm-5 col-md-5">
+                <div class="form-group">
+                    <label>Product</label>
+                    <select id="productSelect"  name="ProductId" class="form-control">
+                        <option value="">Select a product...</option>
+                        @foreach (var product in ViewBag.Products)
+                        {
+                            <option value="@product.Id" data-product-price = "@product.Price">@product.ProductName</option>
+                        }
+                    </select> 
+                </div>
+            </div>
+            <div class="col-sm-5 col-md-5">
+               <div class="form-group">
+                    <label name="ProductQuantity"  class="control-label"></label>
+                    <input id="productQuantity"  name="ProductQuantity" type="number" class="form-control" />
+                </div> 
+            </div>
+            <div class="col-sm-3 col-md-2">
+                <button type="button" id="btnAddItem" onclick="addInvoiceItem()" class="btn btn-primary">Add Item</button>
+            </div>
+        </div>
+
+        <div id="invoiceItemsTable" class="container row mt-5">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoiceItemsBody">
+                    </tbody>
+                </table>
+            </div>
+        </div> 
+    
+
+        
+        <div class="row mt-5 justify-content-end">
+            <div class="form-group col-2" >
+                <input id="btnSaveAll" type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </div>
+        
+    </form>
+
+    
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var itemIndex = 0;
+
+        function addInvoiceItem() {
+            var productId = $('#productSelect').val();
+            var productText = $('#productSelect option:selected').text();
+            var productPrice = parseFloat($('#productSelect option:selected').data('product-price'));
+            var productQuantity = $('#productQuantity').val();
+            console.log(productPrice)
+
+            if (productId && productQuantity) {
+                var row = '<tr id="' + itemIndex + '">' +
+                    '<td>' + productText + '</td>' +
+                    '<td>' + productQuantity + '</td>' +
+                    '<td>' + productPrice + '</td>' +
+                    '<td>' + (productPrice * productQuantity) + '</td>' +
+                    '<td><button type="button" onclick="removeInvoiceItem(this)" class="btn btn-danger">Remove</button></td>' +
+                    '<input type="hidden" name="InvoiceItems[' + itemIndex + '].ProductId" value="' + productId + '" />' +
+                    '<input type="hidden" name="InvoiceItems[' + itemIndex + '].ProductQuantity" value="' + productQuantity + '" />' +
+                    '<input type="hidden" name="InvoiceItems[' + itemIndex + '].ProductPrice" value="' + productPrice + '" />' +
+                    '</tr>';
+                $('#invoiceItemsBody').append(row);
+                itemIndex++;
+
+                // Clear the input fields
+                $('#productSelect').val('');
+                $('#productQuantity').val('');
+            } else {
+                alert('Please select a product and enter a quantity.');
+            }
+        }
+
+        function removeInvoiceItem(button) {
+            $(button).closest('tr').remove();
+        }
+
+        $(document).ready(function () {
+            $('#invoiceForm').submit(function (event) {
+                // Prevent the default form submission
+                event.preventDefault();
+
+                // Gather the form data
+                var formData = $(this).serialize();
+                // console.log(formData);
+
+                // Send the form data via AJAX
+                $.post($(this).attr('action'), formData, function (response) {
+                     window.location.href = "/Invoice"; 
+                });
+            });
+        });
+    </script> 
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

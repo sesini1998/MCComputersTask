@@ -1,0 +1,72 @@
+﻿@model IEnumerable<MCComputers.API.Models.Invoice>
+
+@{
+    ViewData["Title"] = "Invoices";
+}
+
+<h1>Invoices</h1>
+<div class="d-flex justify-content-end">
+<button class="btn btn-primary">
+    <a class="text-white" asp-action="Create">Create New</a>
+</button>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BalanceAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Discount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Customer)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BalanceAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Discount)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Customer.FirstName)
+                    @Html.DisplayFor(modelItem => item.Customer.LastName)
+            </td>
+            <td>
+                    <button class="btn btn-secondary">
+                        <a class="text-white" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    </button>
+                 |
+                    <button class="btn btn-danger">
+                <a class="text-dark" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
