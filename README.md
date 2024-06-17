@@ -20,7 +20,7 @@ This project is an ASP.NET MVC application designed for MC Computers, a retail s
 
 1. Clone the repository
     
-    git clone https://github.com/yourusername/MCComputers.git
+    git clone https://github.com/sesini1998/MCComputersTask.git
     cd MCComputers
     
 
